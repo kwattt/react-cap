@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import io from 'socket.io-client'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function App() {
+import {DataProvider} from './context/ctx'
+
+import Nav from './components/Nav'
+
+const socket = io('localhost:3001')
+
+const App = () => {
+  const [isConnected, setIsConnected] = useState(socket.connected)
+  
+  useEffect(() => {
+
+    socket.on('connect', () => {
+      setIsConnected(true)
+    });
+    socket.on('disconnect', () => {
+      setIsConnected(false)
+    });
+    socket.on('message', data => {
+      console.log(data)
+    });
+
+    return () => {
+        
+      socket.off('connect')
+      socket.off('disconnect')
+      socket.off('message')
+
+    }
+
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+      <DataProvider>
+        <Nav status={isConnected} socket={socket}/>
+        <center><div>
+        {!isConnected && <h2>Desconectado</h2>}
+        </div></center>
+      </DataProvider>
+    </>
+    )
 }
 
-export default App;
+export default App
