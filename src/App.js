@@ -4,7 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import {DataProvider} from './context/ctx'
 
-import Nav from './components/Nav'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+import Navb from './components/Nav'
+import Home from './components/tabs/Home/Home'
+import Logs from './components/tabs/Logs/Logs'
+
 
 const socket = io('localhost:3001')
 
@@ -36,7 +41,19 @@ const App = () => {
   return (
     <>
       <DataProvider>
-        <Nav status={isConnected} socket={socket}/>
+        <Router>  
+          <Navb status={isConnected} socket={socket}/>
+
+          <Switch>
+            <Route exact path='/'>
+              <Home socket={socket} />
+            </Route>
+            <Route path='/logs'>
+              <Logs socket={socket} />
+            </Route>
+          </Switch>
+        </Router>
+        
         <center><div>
         {!isConnected && <h2>Desconectado</h2>}
         </div></center>

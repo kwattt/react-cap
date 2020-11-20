@@ -1,28 +1,46 @@
-import Tabs from 'react-bootstrap/Tabs'
-import Tab from 'react-bootstrap/Tab'
+import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
 
-import Home from './tabs/Home/Home'
+import Form from 'react-bootstrap/Form'
+import FormControl from 'react-bootstrap/FormControl'
+import Button from 'react-bootstrap/Button'
 
-const Nav = ({status, socket}) => {
+import {useContext} from 'react'
+import {Data} from "../context/ctx"
 
-  return (
-    <Tabs className="justify-content-center" defaultActiveKey="inicio">
-      <Tab eventKey="inicio" title="Home">
-        <Home socket={socket}/>
-      </Tab>
+import { LinkContainer } from "react-router-bootstrap";
+import ToggleStatus from './tabs/Home/toggleStatus'
 
-      {status ? <Tab eventKey="log" title="Logs"></Tab>
-      : <Tab eventKey="log" title="Logs" disabled></Tab>}
+const Navb = ({status, socket}) => {
 
-      {status ? <Tab eventKey="stats" title="Stats">Content</Tab>
-      : <Tab eventKey="stats" title="Stats" disabled></Tab>}
+  const data = useContext(Data)
 
-      {status ? <Tab eventKey="graph" title="Graph">Content</Tab>
-      : <Tab eventKey="graph" title="Graph" disabled></Tab>}
+  return (<>
+    <Navbar bg="light" expand="sm" sticky="top" >
+      <Navbar.Brand>reactCap</Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+      <Navbar.Collapse id="basic-navbar-nav">
+      
+        <Nav className="mr-auto">
+        <LinkContainer to="/">
+          <Nav.Link>Home</Nav.Link>
+        </LinkContainer>
 
-    </Tabs>
-  )
+        <LinkContainer to="/logs">
+          <Nav.Link>Logs</Nav.Link>
+        </LinkContainer>
+
+        </Nav>  
+        
+        <Form inline>
+          <ToggleStatus socket={socket}/>
+          <FormControl type="text" placeholder="Filtro (tcp, udp, http)" className="mr-sm-2" />
+          <Button variant="outline-success">Activar</Button>
+        </Form>
+      </Navbar.Collapse>
+    </Navbar>
+    </>)
 
 }
 
-export default Nav 
+export default Navb

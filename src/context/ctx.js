@@ -4,7 +4,7 @@ const Data = createContext(undefined)
 const DataDispatch = createContext(undefined)
 
 const DataProvider = ({children}) => {
-  const [data, setData] = useState({selected: -1, data: [], name: "", status: false})
+  const [data, setData] = useState({selected: -1, packets: [], name: "", status: false})
 
   return (
     <Data.Provider value={data}>

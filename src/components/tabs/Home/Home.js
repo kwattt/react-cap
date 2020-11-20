@@ -8,6 +8,8 @@ import Dropdown from 'react-bootstrap/Dropdown'
 
 import Status from "./toggleStatus"
 
+var mycapturer = []
+var lastid = -1
 const Home = ({socket}) => {
   const [devices, setDevices] = useState([])
 
@@ -16,10 +18,26 @@ const Home = ({socket}) => {
 
   useEffect(() => {
     socket.emit("getDevices")
-      socket.on("getDevices", data => {
-        setDevices(data)
-      })
-  }, [socket])
+    socket.on("getDevices", data => {
+      setDevices(data)
+    })
+
+    socket.on("sendPacket", packet => {
+      if(packet.id !== lastid){
+        mycapturer.push(packet)
+        lastid = packet.id
+      }
+    })
+    
+    const interval = setInterval(() => {
+      console.log("interval")
+      if(data.packets !== mycapturer)
+        setData({...data, packets: mycapturer})
+        
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [socket, data, setData])
 
   return (    
     <div id="Home">
@@ -32,8 +50,8 @@ const Home = ({socket}) => {
           <br/>
           <br/>
         
-          <Status></Status>
-          
+          <Status socket={socket}></Status>
+
         </center> </Container> 
       </Jumbotron>
     </div>
@@ -75,17 +93,15 @@ const Devices = ({props, bool}) => {
   return (<>
     {props.map((dev) => {
       return (
-        <>
+        <div key={dev.id}>
         {bool ?
-          <Dropdown.Item eventKey={dev.id} key={dev.id} disabled>{dev.rname}</Dropdown.Item>
+          <Dropdown.Item eventKey={dev.id}  disabled>{dev.rname}</Dropdown.Item>
           :
-          <Dropdown.Item eventKey={dev.id} key={dev.id}>{dev.rname}</Dropdown.Item>
+          <Dropdown.Item eventKey={dev.id} >{dev.rname}</Dropdown.Item>
         }
-        </>
-      )
+        </div>)
     })}
-    </>
-  )
+  </>)
 }
 
 export default Home

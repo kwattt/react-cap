@@ -6,9 +6,9 @@ const io = require('socket.io')()
     socket.on('disconnect', () => {
       console.log(`disconnect: ${socket.id}`)
     })
-
   })
 
-  const adapter = require('./adapters')(io)
+  const adapter = require('./adapter')(io)
+  const capturer = require('./capturer')(io)
 
 io.listen(3001)
