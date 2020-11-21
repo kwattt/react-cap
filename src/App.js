@@ -11,7 +11,7 @@ import Home from './components/tabs/Home/Home'
 import Logs from './components/tabs/Logs/Logs'
 
 
-const socket = io('localhost:3001')
+const socket = io('http://localhost:8000')
 
 const App = () => {
   const [isConnected, setIsConnected] = useState(socket.connected)

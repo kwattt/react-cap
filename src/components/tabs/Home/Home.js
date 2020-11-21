@@ -61,7 +61,7 @@ const DropdownI = ({data, setData, devices}) => {
   const getDeviceName = (id) => {
     var name
     devices.forEach(element => {
-      if(element.id === parseInt(id)) name = element.rname
+      if(element.id === parseInt(id)) name = element.name
     })
     return name
   }
@@ -93,9 +93,9 @@ const Devices = ({props, bool}) => {
       return (
         <div key={dev.id}>
         {bool ?
-          <Dropdown.Item eventKey={dev.id}  disabled>{dev.rname}</Dropdown.Item>
+          <Dropdown.Item eventKey={dev.id}  disabled>{dev.name}</Dropdown.Item>
           :
-          <Dropdown.Item eventKey={dev.id} >{dev.rname}</Dropdown.Item>
+          <Dropdown.Item eventKey={dev.id} >{dev.name}</Dropdown.Item>
         }
         </div>)
     })}

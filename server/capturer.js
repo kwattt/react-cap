@@ -10,7 +10,8 @@ var c_id = 0
 var mysock
 
 exports = module.exports = function(io){
-  console.log("aww:)")
+
+
   io.sockets.on('connection',  (socket) => {
     mysock = socket
 
