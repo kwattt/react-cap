@@ -30,10 +30,8 @@ const Home = ({socket}) => {
     })
     
     const interval = setInterval(() => {
-      console.log("interval")
       if(data.packets !== mycapturer)
         setData({...data, packets: mycapturer})
-        
     }, 1000);
 
     return () => clearInterval(interval);

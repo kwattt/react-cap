@@ -54,7 +54,7 @@ const Packets = ({data}) => {
 
             {elements.includes(item.id) &&
               <tr><td colSpan="4">
-              <PacketInfo className="pInfo" data={item.data} id={item.id}/>
+              <PacketInfo className="pInfo" banc={item} id={item.id}/>
               </td></tr>
             }
           </React.Fragment>)
@@ -64,11 +64,18 @@ const Packets = ({data}) => {
 
 }
 
-const PacketInfo = ({data, id}) => {
+const PacketInfo = ({banc, id}) => {
   return (<>
-    {data.map((inf) =>{
+
+    {banc.data.map((inf) =>{
       return (<><b>{inf[0]}</b>: {inf[1]}<br/></>)
     })}
+    <b>{banc.pro[0]}</b> <br/>
+
+    {banc.pro.slice(1).map((inf) =>{
+      return (<><b>{inf[0]}</b>: {inf[1]}<br/></>)
+    })}
+
   </>)
 }
 

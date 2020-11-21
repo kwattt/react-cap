@@ -12,7 +12,7 @@ module.exports = {
 
     if(type === "8:0"){
       res = ipv.ipv4(nbuff.slice(14))
-      res.unshift(["Type", "08:00 IPv4"])
+      res[0].unshift(["Type", "08:00 IPv4"])
       idT = 0
     } 
     else if(type === "8:6"){
@@ -24,14 +24,13 @@ module.exports = {
       idT = 2
     } 
     else if(type === "86:dd"){
-      res.push(["Type", "86:DD IPv6"])
       res = ipv.ipv6(nbuff.slice(14))
-      res.unshift(["Type", "86:DD IPv6"])
+      res[0].unshift(["Type", "86:DD IPv6"])
       idT = 3
     } 
     else res.push("Type ??? ", nbuff.slice(12,14).join(":"))
 
-    return {type: idT, data: res}
+    return {type: idT, data: res[0], pro: res[1]}
   }
   
 }
