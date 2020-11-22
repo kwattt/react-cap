@@ -19,14 +19,19 @@ sio.attach(app)
 globall = False
 
 @sio.event
+async def disconnect(sid):
+  global globall
+  globall = False
+
+@sio.event
 async def connect(sid, environ):
   print("socket-all-right")
 
 @sio.event
 async def getDevices(eh):
+  print("called devices")
   devices.clear()
   result = subprocess.run(['getmac.exe', '/fo', 'csv', '/v'], stdout=subprocess.PIPE)
-
   result = re.split('/\r\n|\r|\n/',  result.stdout.decode('windows-1252'))
 
   result.pop(0)
@@ -61,16 +66,24 @@ def sniffer(e, leid):
     if x['id'] == leid:
       maxd = x["name"]
 
-  a = sniff(stop_filter=lambda p: e.is_set(), iface=maxd, prn=send_packet)
+  a = sniff(stop_filter=lambda p: e.is_set(), iface=maxd, prn=to_packet)
   e.clear()
   print("Stopped after %i packets" % len(a))
 
+def to_packet(pkt):
+  asyncio.run(send_packet(pkt))
+
+
 import decoder
 
-def send_packet(pkt):
+async def send_packet(pkt):
   if not globall:
+    await sio.emit('toggleCapturer', False)
     e.set()
   pkth = bytes(pkt).hex().upper()
+  ret = decoder.decode(pkth)
+  if not ret["skip"]:
+    await sio.emit("sendPacket", ret)
 
 
 if __name__ == '__main__':

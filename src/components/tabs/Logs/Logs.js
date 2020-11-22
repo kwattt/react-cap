@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react'
-import {Data} from "../../../context/ctx"
+import {Packet} from "../../../context/ctx"
 
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
@@ -8,16 +8,15 @@ import Table from 'react-bootstrap/Table'
 
 import "./Logs.css"
 
-const Logs = ({socket}) => {
-
-  const data = useContext(Data)
+const Logs = () => {
+  const packets = useContext(Packet)
 
   return(
-    <Packets data={data.packets}/>
+    <MPackets data={packets}/>
   )
 }
 
-const Packets = ({data}) => {
+const MPackets = ({data}) => {
   const [elements, setElements] = useState([])
 
   const showElementBelow = (e) => {
@@ -30,6 +29,7 @@ const Packets = ({data}) => {
     else setElements([...elements, e])
   }
 
+
   return(<>
     <br/><br/>      
     <Container><Jumbotron>
@@ -40,21 +40,26 @@ const Packets = ({data}) => {
           <th>ID</th>
           <th>Timestamp</th>
           <th>Protocol</th>
+          <th>Origen</th>
+          <th>Destino</th>
         </tr>
       </thead>
       <tbody>
 
-      {data.map((item) => {
+      {data.length > 0 &&  
+      data.map((item) => {
         return (<React.Fragment key={item.id}><tr>
               <td><Button className="pContent" variant="outline-dark" size="sm" onClick={() => {showElementBelow(item.id)}}>Expandir</Button></td>
               <td>{item.id}</td>
-              <td>{item.ts}</td>
-              <td>{item.type === 0 ? <b>IPv4</b> : <b>IPv6</b>}</td>
+              <td>{item.tes}</td>
+              <td>{item.protocol}</td>
+              <td>{item.ori}</td>
+              <td>{item.dest}</td>
             </tr>
 
             {elements.includes(item.id) &&
-              <tr><td colSpan="4">
-              <PacketInfo className="pInfo" banc={item} id={item.id}/>
+              <tr><td colSpan="6">
+              <PacketInfo className="pInfo" banc={item}/>
               </td></tr>
             }
           </React.Fragment>)
@@ -64,18 +69,19 @@ const Packets = ({data}) => {
 
 }
 
-const PacketInfo = ({banc, id}) => {
+const PacketInfo = ({banc}) => {
   return (<>
-
-    {banc.data.map((inf) =>{
-      return (<><b>{inf[0]}</b>: {inf[1]}<br/></>)
-    })}
-    <b>{banc.pro[0]}</b> <br/>
-
-    {banc.pro.slice(1).map((inf) =>{
-      return (<><b>{inf[0]}</b>: {inf[1]}<br/></>)
+    {banc.data.map((inf, lid) =>{
+      return (<div key={lid}><b>{inf[0]}</b>: {inf[1]}<br/></div>)
     })}
 
+    {banc.pro && <>
+      <b>{banc.pro[0]}</b> <br/>
+
+      {banc.pro.slice(1).map((inf,lid) =>{
+        return (<div key={lid}><b>{inf[0]}</b>: {inf[1]}<br/></div>)
+      })}
+    </>}
   </>)
 }
 

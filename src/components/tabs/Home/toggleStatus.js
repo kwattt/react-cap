@@ -5,7 +5,6 @@ import Button from "react-bootstrap/Button"
 import Spinner from "react-bootstrap/Spinner"
 
 const ToggleStatus = ({socket}) => {
-  //console.log("render!?")
   const data = useContext(Data)
   const setData = useContext(DataDispatch)
   const [load, setLoad] = useState(false)
@@ -21,12 +20,11 @@ const ToggleStatus = ({socket}) => {
     socket.on("toggleCapturer", data => {
       setLoad(false)
     })
-
-  }, [socket, data, setData])
+  })
 
   return (
   <>
-    {data.selected !== -1 && <>
+    {data.selected !== "-1" && <>
       {
       !load ?
         !data.status ? <Button variant="success" onClick={() => {setStatus(true)}}>Iniciar servidor</Button> 

@@ -1,3 +1,5 @@
+import {useContext} from 'react'
+
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
@@ -5,15 +7,18 @@ import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import Button from 'react-bootstrap/Button'
 
-import {useContext} from 'react'
-import {Data} from "../context/ctx"
-
 import { LinkContainer } from "react-router-bootstrap";
 import ToggleStatus from './tabs/Home/toggleStatus'
+import SelectDevice from './tabs/Home/selectDevice'
+import DeleteCache from './tabs/Home/deleteCache'
 
-const Navb = ({status, socket}) => {
+import {Packet} from "../context/ctx"
 
-  const data = useContext(Data)
+const Navb = ({socket}) => {
+  const packets = useContext(Packet)
+
+
+  console.log("HEY!")
 
   return (<>
     <Navbar bg="light" expand="sm" sticky="top" >
@@ -30,10 +35,15 @@ const Navb = ({status, socket}) => {
           <Nav.Link>Logs</Nav.Link>
         </LinkContainer>
 
+        <Nav.Link>Graphs</Nav.Link>
+        <Nav.Link>Stats</Nav.Link>
+
         </Nav>  
         
         <Form inline>
+          {packets.length > 0 && <DeleteCache/>}
           <ToggleStatus socket={socket}/>
+          <SelectDevice socket={socket}/>
           <FormControl type="text" placeholder="Filtro (tcp, udp, http)" className="mr-sm-2" />
           <Button variant="outline-success">Activar</Button>
         </Form>
