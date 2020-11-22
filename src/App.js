@@ -35,11 +35,12 @@ const App = () => {
   }, [])
 
   return (
-    <>
-      <DataProvider>
-      <PacketProvider>
+    <React.Fragment>
+
 
           <Router>  
+          <PacketProvider>
+            <DataProvider>
             <PacketHandler socket={socket}></PacketHandler>
             <Navb socket={socket}/>
             <Switch>
@@ -50,14 +51,14 @@ const App = () => {
                 <Logs/>
               </Route>
             </Switch>
+            </DataProvider>
+          </PacketProvider>
           </Router>
 
         <center><div>
         {!isConnected && <h2>Desconectado</h2>}
         </div></center>
-      </PacketProvider>
-      </DataProvider>
-    </>
+    </React.Fragment>
     )
 }
 

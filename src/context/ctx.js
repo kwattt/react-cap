@@ -12,7 +12,8 @@ const DataProvider = ({children}) => {
         {children}
       </DataDispatch.Provider>
     </Data.Provider>
-)}
+)
+}
 
 const Packet = createContext(undefined)
 const PacketDispatch = createContext(undefined)

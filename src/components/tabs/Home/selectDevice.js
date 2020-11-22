@@ -26,9 +26,11 @@ const SelectDevice = ({socket}) => {
     setData({...data, selected: e.target.value})
   }
 
+  var bruh = {}
+  if(data.status) bruh = {disabled: "{True}"}
   return (<div>
         {!loading ?
-        <Form.Control as="select" custom value={data.selected} onChange={ (e) => {onFormSelect(e)}}>
+        <Form.Control {...bruh} as="select" custom value={data.selected} onChange={ (e) => {onFormSelect(e)}}>
           <Devices props={devices}></Devices>
         </Form.Control>
         :

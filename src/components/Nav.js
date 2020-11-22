@@ -14,13 +14,15 @@ import DeleteCache from './tabs/Home/deleteCache'
 
 import {Packet} from "../context/ctx"
 
+const st = {
+  'marginLeft': '25px'
+} 
+
 const Navb = ({socket}) => {
   const packets = useContext(Packet)
+  console.log("NavRender")
 
-
-  console.log("HEY!")
-
-  return (<>
+return (<>
     <Navbar bg="light" expand="sm" sticky="top" >
       <Navbar.Brand>reactCap</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav"/>
@@ -37,7 +39,8 @@ const Navb = ({socket}) => {
 
         <Nav.Link>Graphs</Nav.Link>
         <Nav.Link>Stats</Nav.Link>
-
+        
+        <Navbar.Text style={st} >Packets in cache: {packets.length}</Navbar.Text>
         </Nav>  
         
         <Form inline>

@@ -1,6 +1,6 @@
 
 import {useEffect, useContext} from 'react'
-import {Data, Packet, PacketDispatch} from "../context/ctx"
+import {Packet, PacketDispatch} from "../context/ctx"
 
 var lastid = -1
 var mycapturer = []
@@ -10,7 +10,6 @@ const deleteCap = () => {
 }
 
 const PacketHandler = ({socket}) => {
-  const data = useContext(Data)
   const packets = useContext(Packet)
   const setPackets = useContext(PacketDispatch)
 
@@ -26,10 +25,10 @@ const PacketHandler = ({socket}) => {
       if(packets.toString() !== mycapturer.toString()){
         setPackets(mycapturer)
       }
-    }, 500);
+    }, 1500);
 
     return () => clearInterval(interval);
-  }, [socket, data, packets, setPackets])
+  })
 
   return <></>
 }
