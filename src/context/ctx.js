@@ -19,7 +19,7 @@ const Packet = createContext(undefined)
 const PacketDispatch = createContext(undefined)
 
 const PacketProvider = ({children}) => {
-  const [packet, setPacket] = useState([])
+  const [packet, setPacket] = useState({plen: 0, flen: 0, packets: []})
 
   return (
     <Packet.Provider value={packet}>
@@ -29,7 +29,6 @@ const PacketProvider = ({children}) => {
     </Packet.Provider>
   )
 }
-
 
 export {Data, DataDispatch, DataProvider,     PacketProvider, Packet, PacketDispatch}
 

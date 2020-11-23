@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {DataProvider, PacketProvider} from './context/ctx'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import Navb from './components/Nav'
+import Navb from './components/Nav/Nav'
 import Home from './components/tabs/Home/Home'
 import Logs from './components/tabs/Logs/Logs'
 import PacketHandler from './components/packetHandler'

@@ -27,13 +27,17 @@ const ToggleStatus = ({socket}) => {
     {data.selected !== "-1" && <>
       {
       !load ?
-        !data.status ? <Button variant="success" onClick={() => {setStatus(true)}}>Iniciar servidor</Button> 
-        : <Button variant="danger" onClick={() => {setStatus(false)}}>Detener servidor</Button> 
+        !data.status ? <Button style={marg} variant="success" onClick={() => {setStatus(true)}}>Iniciar servidor</Button> 
+        : <Button style={marg} variant="danger" onClick={() => {setStatus(false)}}>Detener servidor</Button> 
       : <Spinner animation="border" />
       }    
     </>}
   </>
   )
 } 
+
+const marg = {
+  "marginInline": "15px"
+}
 
 export default ToggleStatus

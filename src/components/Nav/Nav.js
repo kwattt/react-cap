@@ -4,15 +4,15 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
 import Form from 'react-bootstrap/Form'
-import FormControl from 'react-bootstrap/FormControl'
-import Button from 'react-bootstrap/Button'
 
 import { LinkContainer } from "react-router-bootstrap";
-import ToggleStatus from './tabs/Home/toggleStatus'
-import SelectDevice from './tabs/Home/selectDevice'
-import DeleteCache from './tabs/Home/deleteCache'
 
-import {Packet} from "../context/ctx"
+import ToggleStatus from '../tabs/Home/toggleStatus'
+import SelectDevice from '../tabs/Home/selectDevice'
+import DeleteCache from '../tabs/Home/deleteCache'
+import Filter from './Filter'
+
+import {Packet} from "../../context/ctx"
 
 const st = {
   'marginLeft': '25px'
@@ -22,13 +22,21 @@ const Navb = ({socket}) => {
   const packets = useContext(Packet)
   console.log("NavRender")
 
-return (<>
-    <Navbar bg="light" expand="sm" sticky="top" >
+
+  const stopRefresh = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  return (<>
+
+    <Navbar bg="dark" expand="sm" sticky="top" variant="dark" >
       <Navbar.Brand>reactCap</Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav"/>
       <Navbar.Collapse id="basic-navbar-nav">
-      
+
         <Nav className="mr-auto">
+
         <LinkContainer to="/">
           <Nav.Link>Home</Nav.Link>
         </LinkContainer>
@@ -39,16 +47,16 @@ return (<>
 
         <Nav.Link>Graphs</Nav.Link>
         <Nav.Link>Stats</Nav.Link>
-        
-        <Navbar.Text style={st} >Packets in cache: {packets.length}</Navbar.Text>
+
+        <Navbar.Text style={st} >Packets in cache: {packets.plen}</Navbar.Text>
+        <Navbar.Text style={st} >Packets in browser: {packets.flen}</Navbar.Text>
         </Nav>  
-        
-        <Form inline>
-          {packets.length > 0 && <DeleteCache/>}
+
+        <Form inline onSubmit={(e) => {stopRefresh(e)}}>
+          {packets.flen > 0 && <DeleteCache socket={socket}/>}
           <ToggleStatus socket={socket}/>
           <SelectDevice socket={socket}/>
-          <FormControl type="text" placeholder="Filtro (tcp, udp, http)" className="mr-sm-2" />
-          <Button variant="outline-success">Activar</Button>
+          <Filter socket={socket}/>
         </Form>
       </Navbar.Collapse>
     </Navbar>

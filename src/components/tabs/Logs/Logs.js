@@ -9,10 +9,10 @@ import Table from 'react-bootstrap/Table'
 import "./Logs.css"
 
 const Logs = () => {
-  const packets = useContext(Packet)
+  const Packeti = useContext(Packet)
 
   return(
-    <MPackets data={packets}/>
+    <MPackets data={Packeti.packets}/>
   )
 }
 
