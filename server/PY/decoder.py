@@ -2,11 +2,7 @@ from protocols.ipv4 import ipv4
 from protocols.ipv6 import ipv6
 from datetime import datetime
 
-leid = -1
-
 def decode(pkt):
-  global leid
-  leid+=1
   res = []
   n = 2
   hexcoded = [pkt[i:i+n] for i in range(0, len(pkt), n)]
@@ -25,17 +21,18 @@ def decode(pkt):
   elif Ip == "IPv4":
     leres = ipv4(hexcoded[14::])
 
-  if Ip == "ARP" or Ip == "RARP":
+  if Ip == "ARP" or Ip == "RARP" or Ip == "LLDP":
     return({"skip": True})
   else:
     res.extend(leres["data"])
 
   ledate = datetime.now().strftime('%H:%M:%S.%f')[:-3]
-  return({"skip": False, "id": leid, "ip": Ip, "data": res, "tes":ledate, "protocol": leres["protocol"], "ori": leres["ori"], "dest": leres["dest"]})
+  return({"skip": False, "sport": leres["sport"], "dport": leres["dport"], "ip": Ip, "data": res, "tes":ledate, "protocol": leres["protocol"], "ori": leres["ori"], "dest": leres["dest"]})
 
 IPv = {
   "86DD": "IPv6",
   "0800": "IPv4",
   "0806": "ARP",
-  "8035": "RARP"
+  "8035": "RARP",
+  "88CC": "LLDP"
 }

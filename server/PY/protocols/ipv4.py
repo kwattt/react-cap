@@ -1,4 +1,5 @@
 from protocols.common import *
+from protocols.tlayer import *
 
 def ipv4(pkt):
   res = []
@@ -44,4 +45,14 @@ def ipv4(pkt):
   dest = getIpv4(pkt[16:20])
   res.append(["Destination IP Address", dest])
 
-  return {"data": res, "protocol": pvalue, "ori": ori, "dest" : dest}
+  lr = []
+  if pvalue == "UDP":
+    lr = udp(pkt[20::])
+  elif pvalue == "TCP":
+    lr = tcp(pkt[20::])
+  if lr:
+    res.extend(lr[0])
+  else:
+    lr = ["123213", "123213", "123213"]
+
+  return {"data": res, "protocol": pvalue, "ori": ori, "dest" : dest, "sport": lr[1], "dport": lr[2]}

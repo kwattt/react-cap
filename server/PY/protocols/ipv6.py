@@ -1,5 +1,6 @@
 from protocols.common import *
 import netaddr
+from protocols.tlayer import *
 
 def ipv6(pkt):
   res = []
@@ -33,4 +34,14 @@ def ipv6(pkt):
   dest = str(netaddr.IPAddress(hex_to_dec(pkt[24:40])))
   res.append(["Destination Address", dest])
 
-  return {"data": res, "protocol": pvalue, "ori": ori, "dest" : dest}
+  lr = []
+  if pvalue == "UDP":
+    lr = udp(pkt[40::])
+  elif pvalue == "TCP":
+    lr = tcp(pkt[40::])
+  if lr:
+    res.extend(lr[0])
+  else:
+    lr = ["123213", "123213", "123213"]
+
+  return {"data": res, "protocol": pvalue, "ori": ori, "dest" : dest, "sport": lr[1], "dport": lr[2]}

@@ -46,10 +46,9 @@ const Navb = ({socket}) => {
         </LinkContainer>
 
         <Nav.Link>Graphs</Nav.Link>
-        <Nav.Link>Stats</Nav.Link>
 
-        <Navbar.Text style={st} >Packets in cache: {packets.plen}</Navbar.Text>
-        <Navbar.Text style={st} >Packets in browser: {packets.flen}</Navbar.Text>
+        <Navbar.Text style={st}>Cache: {packets.plen}</Navbar.Text>
+        <Navbar.Text style={st}>Filter: {packets.flen}</Navbar.Text>
         </Nav>  
 
         <Form inline onSubmit={(e) => {stopRefresh(e)}}>

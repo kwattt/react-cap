@@ -27,8 +27,8 @@ const ToggleStatus = ({socket}) => {
     {data.selected !== "-1" && <>
       {
       !load ?
-        !data.status ? <Button style={marg} variant="success" onClick={() => {setStatus(true)}}>Iniciar servidor</Button> 
-        : <Button style={marg} variant="danger" onClick={() => {setStatus(false)}}>Detener servidor</Button> 
+        !data.status ? <Button style={marg} variant="success" onClick={() => {setStatus(true)}}>Start</Button> 
+        : <Button style={marg} variant="danger" onClick={() => {setStatus(false)}}>Stop</Button> 
       : <Spinner animation="border" />
       }    
     </>}

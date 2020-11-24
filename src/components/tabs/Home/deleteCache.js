@@ -8,7 +8,7 @@ const DeleteCache = ({socket}) => {
     socket.emit("killPackets")
   }
 
-  return(<Button variant='danger' onClick={killPackets}>Delete Cache (ALL)</Button>)
+  return(<Button variant='danger' onClick={killPackets}>Delete</Button>)
 } 
 
 export default DeleteCache

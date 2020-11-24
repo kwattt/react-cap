@@ -1,5 +1,7 @@
 import React, {useState, useContext} from 'react'
 import {Packet} from "../../../context/ctx"
+import { MDBDataTableV5 } from 'mdbreact';
+
 
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
@@ -29,11 +31,10 @@ const MPackets = ({data}) => {
     else setElements([...elements, e])
   }
 
-
   return(<>
     <br/><br/>      
     <Container><Jumbotron>
-      <Table striped bordered hover size="sm">
+      <Table striped bordered hover size="sm" responsive="sm">
       <thead>
         <tr>
           <th>Expandir</th>
@@ -41,7 +42,9 @@ const MPackets = ({data}) => {
           <th>Timestamp</th>
           <th>Protocol</th>
           <th>Origen</th>
-          <th>Destino</th>
+          <th>Destino</th>          
+          <th>Puerto Origen</th>
+          <th>Puerto Destino</th>
         </tr>
       </thead>
       <tbody>
@@ -55,10 +58,12 @@ const MPackets = ({data}) => {
               <td>{item.protocol}</td>
               <td>{item.ori}</td>
               <td>{item.dest}</td>
+              <td>{item.sport}</td>
+              <td>{item.dport}</td>
             </tr>
 
             {elements.includes(item.id) &&
-              <tr><td colSpan="6">
+              <tr><td colSpan="8">
               <PacketInfo className="pInfo" banc={item}/>
               </td></tr>
             }
@@ -66,23 +71,25 @@ const MPackets = ({data}) => {
       })}
     </tbody></Table>
       </Jumbotron></Container></>)
-
 }
 
 const PacketInfo = ({banc}) => {
   return (<>
     {banc.data.map((inf, lid) =>{
-      return (<div key={lid}><b>{inf[0]}</b>: {inf[1]}<br/></div>)
+      
+      return (<>
+      {inf[1] !== " " ?
+        <div key={lid}><b >{inf[0]}</b>: {inf[1]}<br/></div>
+        :
+        <div key={lid}><b style={st}>{inf[0]}</b><br/></div>
+      }
+      </>)
     })}
-
-    {banc.pro && <>
-      <b>{banc.pro[0]}</b> <br/>
-
-      {banc.pro.slice(1).map((inf,lid) =>{
-        return (<div key={lid}><b>{inf[0]}</b>: {inf[1]}<br/></div>)
-      })}
-    </>}
   </>)
+}
+
+const st = {
+  "color": "#984961"
 }
 
 export default Logs

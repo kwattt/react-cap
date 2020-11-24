@@ -9,20 +9,23 @@ from scapy.all import sniff
 e = threading.Event()
 
 oldLen = 0
-validFilter = ["http", "dns", "tls", "https", "tcp", "udp"]
+validFilter = ["http", "dns", "tls", "https", "tcp", "udp", "icmpv6", "icmpv4"]
+
+p_id = -1
 
 filtres = []
 filtered = []
 packets = []
-
 devices = []
+
+p_current = 0
+p_max = 150
 
 sio = socketio.AsyncServer(async_mode='sanic', cors_allowed_origins=["http://localhost:3000"])
 app = Sanic(name="reactCap", )
 app.config['CORS_SUPPORTS_CREDENTIALS'] = True
 
 sio.attach(app)
-
 globall = False
 
 ip_regex = re.compile('((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))')
@@ -30,9 +33,11 @@ ip_regex = re.compile('((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\
 @sio.event
 async def killPackets(xd):
   print("killed")
+  global p_id
   global packets
   global filtered
   global oldLen
+  p_id = -1
   oldLen = 0
   packets = []
   filtered = []
@@ -43,12 +48,20 @@ async def disconnect(sid):
   global globall
   globall = False
 
+current_r = 0
+
+@sio.event 
+async def setRange(ca, info):
+  global current_r
+  
+
 async def sendPackets():
   await sio.emit("setPackets", {"packets": filtered, "plen": len(packets), "flen": len(filtered)})
 
 @sio.event
 async def connect(sid, environ):
   print("socket-all-right")
+  await getDevices(1)
 
 @sio.event 
 async def setFilter(s, info):
@@ -71,6 +84,9 @@ async def setFilter(s, info):
 
   else:
     filtres = []
+    filtered = []
+    for x in packets:
+      dofilter(x)
 
   if filtres: 
     filtered = []
@@ -89,14 +105,18 @@ def dofilter(x):
       if (x["ip"].lower() == c
       or x["protocol"].lower() == c
       or x["ori"].lower() == c
+      or x["sport"].lower() == c
+      or x["dport"].lower() == c
       or x["dest"].lower() == c):
         filtered.append(x)
+        break
 
   else: 
     filtered.append(x)
 
 @sio.event
 async def getDevices(eh):
+  global devices
   devices.clear()
   result = subprocess.run(['getmac.exe', '/fo', 'csv', '/v'], stdout=subprocess.PIPE)
   result = re.split('/\r\n|\r|\n/',  result.stdout.decode('windows-1252'))
@@ -114,23 +134,25 @@ async def getDevices(eh):
 
 @sio.event
 async def toggleCapturer(s, msg):
-  global globall  
+  global globall
+
   await sio.emit('toggleCapturer', True)
   globall = msg['status']
 
-  print("\n {} \n".format(globall))
+  print("\n Capturer status: {} \n".format(globall))
+
   if globall:
     print("Start capturing thread")
     t = threading.Thread(target=sniffer, args=(e,msg['current'],))
-    globall = True
     t.start()
-  else:
-    globall = False
 
 def sniffer(e, leid):
+  global devices
   maxd = ""
+
   for x in devices:
-    if x['id'] == leid:
+
+    if int(x['id']) == int(leid):
       maxd = x["name"]
 
   a = sniff(stop_filter=lambda p: e.is_set(), iface=maxd, prn=to_packet)
@@ -144,12 +166,16 @@ def to_packet(pkt):
 import decoder
 
 async def send_packet(pkt):
+  global globall
+  global p_id
+  p_id+=1
   if not globall:
     await sio.emit('toggleCapturer', False)
     e.set()
   pkth = bytes(pkt).hex().upper()
   ret = decoder.decode(pkth)
   if not ret["skip"]:
+    ret["id"] = p_id
     packets.append(ret)
     dofilter(ret)
 
