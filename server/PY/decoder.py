@@ -27,7 +27,19 @@ def decode(pkt):
     res.extend(leres["data"])
 
   ledate = datetime.now().strftime('%H:%M:%S.%f')[:-3]
-  return({"skip": False, "sport": leres["sport"], "dport": leres["dport"], "ip": Ip, "data": res, "tes":ledate, "protocol": leres["protocol"], "ori": leres["ori"], "dest": leres["dest"]})
+
+  finalR = []
+
+  for i, x in enumerate(res):
+    if x[1] == " ":
+      temp = [[x[0], x[1]]]
+      for y in res[i+1::]:
+        if y[1] == " ":
+          break
+        temp.append(y)
+      finalR.append(temp)
+
+  return({"skip": False, "sport": leres["sport"], "dport": leres["dport"], "ip": Ip, "data": finalR, "tes":ledate, "protocol": leres["protocol"], "ori": leres["ori"], "dest": leres["dest"]})
 
 IPv = {
   "86DD": "IPv6",

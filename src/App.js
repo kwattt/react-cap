@@ -9,6 +9,8 @@ import Navb from './components/Nav/Nav'
 import Home from './components/tabs/Home/Home'
 import Logs from './components/tabs/Logs/Logs'
 import PacketHandler from './components/packetHandler'
+import Head from './components/Head'
+import Foot from './components/Foot'
 
 
 const socket = io('http://localhost:8000')
@@ -38,7 +40,6 @@ const App = () => {
 
   return (
     <React.Fragment>
-
 
           <Router>  
           <PacketProvider>

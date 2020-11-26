@@ -12,7 +12,7 @@ const Home = ({socket}) => {
         <center>
           <br/>
           <h2>
-            Hola!
+            ReactCap 0.1
           </h2>
         </center>
       </Jumbotron>

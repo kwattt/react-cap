@@ -2,14 +2,10 @@ import React, {useState, useContext, useEffect} from 'react'
 import {Packet} from "../../../context/ctx"
 import { MDBDataTableV5 } from 'mdbreact';
 
+import Selected from './Selected'
 
 import Button from 'react-bootstrap/Button'
 import Jumbotron from 'react-bootstrap/Jumbotron'
-import Modal from 'react-bootstrap/Modal'
-import Container from 'react-bootstrap/Container'
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-
 
 import "./Logs.css"
 
@@ -32,12 +28,6 @@ const Logs = () => {
 }
 
 const MPackets = ({data}) => {
-
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   const [selectedData, setSelectedData] = useState([])
   const [datatable, setDatatable] = useState({})
 
@@ -130,77 +120,14 @@ const MPackets = ({data}) => {
   return (
     <>
 
-      <Button variant="primary" onClick={handleShow}>
-        Ver selección
-      </Button>
+      <Selected selectedData={selectedData}/>
       <Button variant="primary" style={pad} onClick={() => {setSelectedData([])}}>
         Eliminar selección
       </Button>
 
-      <Modal show={show} size="lg" onHide={handleClose} dialogClassName="modalSi">
-        <Modal.Header closeButton>
-          <Modal.Title>Paquetes Seleccionados</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          
-          <Container>
-            <Row>
-          {selectedData.map((item) => {
-              return (
-                <Col xs={4} style={pGround} key={item.id}>
-                  <div style={pSel}>
-                  {item.data.map((inf, lid) =>{
-                    return (<div key={lid}>
-                    {inf[1] !== " " ?
-                      <>
-                      {
-                        inf[1] !== "-" ?
-                          <div><b>{inf[0]}</b>: {inf[1]}<br/></div>
-                        :
-                          <div style={pQuer}><b>{inf[0]}</b><br/></div>
-                      }
-                      </>
-                      :
-                      <div style={pColor} onClick={() => {console.log("awawawa")}}><b>{inf[0]}</b><br/></div>
-                    }
-                    </div>)
-                  })}
-                  </div>
-                </Col>
-              )
-            })}
-            </Row>
-          </Container>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
       <MDBDataTableV5 disableRetreatAfterSorting scrollX hover entriesOptions={[5, 10, 15, 20, 25, 50, 100]} entries={15} data={datatable}/>
-
     </>
   )
-}
-
-const pQuer = {
-  "color": "green"
-}
-
-const pColor = {
-  "color": "red"
-}
-
-const pGround = {
-  "paddingBlock": "5px" 
-}
-
-const pSel = {
-  "backgroundColor": "#f1f1f1",
-  "paddingLeft": "5px",
-  "borderRadius": "5px"
 }
 
 const pad = {

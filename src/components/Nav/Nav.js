@@ -45,8 +45,6 @@ const Navb = ({socket}) => {
           <Nav.Link>Logs</Nav.Link>
         </LinkContainer>
 
-        <Nav.Link>Graphs</Nav.Link>
-
         <Navbar.Text style={st}>Cache: {packets.plen}</Navbar.Text>
         <Navbar.Text style={st}>Filter: {packets.flen}</Navbar.Text>
         </Nav>  
