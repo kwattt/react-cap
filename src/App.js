@@ -14,6 +14,8 @@ import PacketHandler from './components/packetHandler'
 const socket = io('http://localhost:8000')
 
 const App = () => {
+
+
   const [isConnected, setIsConnected] = useState(socket.connected)
   
   useEffect(() => {

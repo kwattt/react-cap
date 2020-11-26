@@ -2,7 +2,7 @@ from protocols.common import *
 from protocols.tlayer import *
 
 def ipv4(pkt):
-  res = []
+  res = [["IPv4", " "]]
   bits = hex_to_bit(pkt[0])
 
   res.append(["Version", bit_to_dec(bits[0:4])])

@@ -1,4 +1,4 @@
-import {createContext, useState} from "react"
+import {createContext, useState, useEffect} from "react"
 
 const Data = createContext(undefined)
 const DataDispatch = createContext(undefined)
@@ -6,13 +6,26 @@ const DataDispatch = createContext(undefined)
 const DataProvider = ({children}) => {
   const [data, setData] = useState({selected: "-1", name: "", status: false})
 
+  useEffect(() => {
+    const mdata = localStorage.getItem("dev-info")
+    if (data){
+      setData(JSON.parse(mdata))
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("dev-info", JSON.stringify(data))
+  })
+
+  
+
   return (
     <Data.Provider value={data}>
       <DataDispatch.Provider value ={setData}>
         {children}
       </DataDispatch.Provider>
     </Data.Provider>
-)
+  )
 }
 
 const Packet = createContext(undefined)

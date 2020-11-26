@@ -1,4 +1,5 @@
 from protocols.common import *
+from protocols.applayer import *
 
 def udp(pkt):
   res = [["User Datagram Protocol", " "]]
@@ -26,6 +27,14 @@ def udp(pkt):
   res.append(["Length", length])
 
   res.append(["Checksum", "".join(pkt[6:8])])
+  
+  if sport == "DNS":
+    res.append(["DNS Source", "-"])
+    res.extend(dns(pkt[8::])) 
+
+  if dport == "DNS":
+    res.append(["DNS Destination", "-"])
+    res.extend(dns(pkt[8::])) 
 
   return [res, sport, dport] 
 
@@ -81,7 +90,13 @@ def tcp(pkt):
   res.append(["Checksum", "".join(pkt[16:18])])
   res.append(["Urgent Pointer", "".join(pkt[18:20])])
 
-  if sport 
+  if sport == "DNS":
+    res.append(["DNS Source", "-"])
+    res.extend(dns(pkt[20::])) 
 
+  if dport == "DNS":
+    res.append(["DNS Destination", "-"])
+    res.extend(dns(pkt[20::])) 
 
   return [res, sport, dport] 
+

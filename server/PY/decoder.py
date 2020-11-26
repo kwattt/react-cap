@@ -3,7 +3,7 @@ from protocols.ipv6 import ipv6
 from datetime import datetime
 
 def decode(pkt):
-  res = []
+  res = [["ETHERNET II", " "]]
   n = 2
   hexcoded = [pkt[i:i+n] for i in range(0, len(pkt), n)]
 

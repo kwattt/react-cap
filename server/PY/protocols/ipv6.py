@@ -3,7 +3,7 @@ import netaddr
 from protocols.tlayer import *
 
 def ipv6(pkt):
-  res = []
+  res = [["IPv6", " "]]
   bits = hex_to_bit(pkt[0])
   bits2 = hex_to_bit(pkt[1])
 

@@ -52,7 +52,7 @@ const Navb = ({socket}) => {
         </Nav>  
 
         <Form inline onSubmit={(e) => {stopRefresh(e)}}>
-          {packets.flen > 0 && <DeleteCache socket={socket}/>}
+          <DeleteCache socket={socket} len={packets.plen}/>
           <ToggleStatus socket={socket}/>
           <SelectDevice socket={socket}/>
           <Filter socket={socket}/>

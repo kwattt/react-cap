@@ -48,13 +48,6 @@ async def disconnect(sid):
   global globall
   globall = False
 
-current_r = 0
-
-@sio.event 
-async def setRange(ca, info):
-  global current_r
-  
-
 async def sendPackets():
   await sio.emit("setPackets", {"packets": filtered, "plen": len(packets), "flen": len(filtered)})
 
@@ -62,6 +55,7 @@ async def sendPackets():
 async def connect(sid, environ):
   print("socket-all-right")
   await getDevices(1)
+  await sendPackets()
 
 @sio.event 
 async def setFilter(s, info):
@@ -108,11 +102,11 @@ def dofilter(x):
       or x["sport"].lower() == c
       or x["dport"].lower() == c
       or x["dest"].lower() == c):
-        filtered.append(x)
+        filtered.insert(0,x)
         break
 
   else: 
-    filtered.append(x)
+    filtered.insert(0,x)
 
 @sio.event
 async def getDevices(eh):
@@ -176,7 +170,7 @@ async def send_packet(pkt):
   ret = decoder.decode(pkth)
   if not ret["skip"]:
     ret["id"] = p_id
-    packets.append(ret)
+    packets.insert(0,ret)
     dofilter(ret)
 
 @app.listener('after_server_start')
@@ -188,10 +182,11 @@ async def Timer():
   global filtered
   global packets
   global oldLen
+
   while True:
-    await asyncio.sleep(0.5)
+    await asyncio.sleep(0.333)
     if oldLen != len(filtered):
-      oldLen = filtered
+      oldLen = len(filtered)
       await sendPackets()
 
 if __name__ == '__main__':

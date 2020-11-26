@@ -9,7 +9,7 @@ const PacketHandler = ({socket}) => {
     socket.on("setPackets", packet => {
       setPackets({...Packet, plen: packet.plen, flen: packet.flen, packets: packet.packets})
     })
-  })
+  }, [setPackets, socket])
 
   return <></>
 }

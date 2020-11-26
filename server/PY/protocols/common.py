@@ -24,8 +24,6 @@ def getIpv4(entry):
     res.append(str(hex_to_dec(x)))
   return ".".join(res)
 
-def getIpv6(entry):
-  pass
 
 PROTOCOL = {
   1: "ICMP",
@@ -90,5 +88,6 @@ PORT = {
   143: "IMAP",
   443: "HTTPS",
   993: "IMAP SSL",
-  995: "POP SSL"
+  995: "POP SSL",
+  1900: "UPnP"
 }
