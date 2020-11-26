@@ -50,6 +50,7 @@ const MPackets = ({data}) => {
     else {
       setSelectedData([...selectedData, item])
     }
+
   }
 
   useEffect(() => {
@@ -136,18 +137,34 @@ const MPackets = ({data}) => {
         Eliminar selección
       </Button>
 
-      <Modal show={show} size="lg" onHide={handleClose}>
+      <Modal show={show} size="lg" onHide={handleClose} dialogClassName="modalSi">
         <Modal.Header closeButton>
           <Modal.Title>Paquetes Seleccionados</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          
           <Container>
             <Row>
           {selectedData.map((item) => {
               return (
-                <Col xs={4} style={pGround}>
+                <Col xs={4} style={pGround} key={item.id}>
                   <div style={pSel}>
-                    {item.id}
+                  {item.data.map((inf, lid) =>{
+                    return (<div key={lid}>
+                    {inf[1] !== " " ?
+                      <>
+                      {
+                        inf[1] !== "-" ?
+                          <div><b>{inf[0]}</b>: {inf[1]}<br/></div>
+                        :
+                          <div style={pQuer}><b>{inf[0]}</b><br/></div>
+                      }
+                      </>
+                      :
+                      <div style={pColor} onClick={() => {console.log("awawawa")}}><b>{inf[0]}</b><br/></div>
+                    }
+                    </div>)
+                  })}
                   </div>
                 </Col>
               )
@@ -167,13 +184,23 @@ const MPackets = ({data}) => {
     </>
   )
 }
-const pGround = {
-  "paddingBlock": "4px 3px"
 
+const pQuer = {
+  "color": "green"
+}
+
+const pColor = {
+  "color": "red"
+}
+
+const pGround = {
+  "paddingBlock": "5px" 
 }
 
 const pSel = {
-  "backgroundColor": "black"
+  "backgroundColor": "#f1f1f1",
+  "paddingLeft": "5px",
+  "borderRadius": "5px"
 }
 
 const pad = {
