@@ -20,8 +20,6 @@ const st = {
 
 const Navb = ({socket}) => {
   const packets = useContext(Packet)
-  console.log("NavRender")
-
 
   const stopRefresh = (e) => {
     e.preventDefault();

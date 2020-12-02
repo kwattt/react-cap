@@ -50,6 +50,10 @@ def ipv4(pkt):
     lr = udp(pkt[20::])
   elif pvalue == "TCP":
     lr = tcp(pkt[20::])
+  elif pvalue == "ICMPv4":
+    lr = icmpv4(pkt[20::])
+  elif pvalue == "ICMPv6":
+    lr = icmpv6(pkt[20::])
   if lr:
     res.extend(lr[0])
   else:

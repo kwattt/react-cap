@@ -1,10 +1,17 @@
 import asyncio
-from sanic import Sanic
+from sanic import Sanic, response
 import socketio
 import subprocess
 import re
 import threading
 from scapy.all import sniff
+import os 
+import sys
+from pathlib import Path
+from engineio.async_drivers import sanic
+import webbrowser
+
+# pyinstaller server.py --onefile --hidden-import="engineio.async_sanic" --add-data "./stuff;stuff"  --add-data "./stuff;static/stuff"
 
 e = threading.Event()
 
@@ -21,14 +28,26 @@ devices = []
 p_current = 0
 p_max = 150
 
-sio = socketio.AsyncServer(async_mode='sanic', cors_allowed_origins=["http://localhost:3000"])
+sio = socketio.AsyncServer(async_mode='sanic', cors_allowed_origins=["127.0.0.1", "http://localhost:8000", "http://127.0.0.1:8000"])
 app = Sanic(name="reactCap", )
 app.config['CORS_SUPPORTS_CREDENTIALS'] = True
-
 sio.attach(app)
 globall = False
 
 ip_regex = re.compile('((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))')
+
+import os, sys
+base_dir = '.'
+if hasattr(sys, '_MEIPASS'): # or, untested: if getattr(sys, 'frozen', False):
+    base_dir = os.path.join(sys._MEIPASS)
+
+base_dir = os.path.join(base_dir, 'stuff')
+
+app.static('/', base_dir)
+
+@app.route("/")
+async def index(request):
+    return await response.file(base_dir + "/index.html")
 
 @sio.event
 async def killPackets(xd):
@@ -53,6 +72,7 @@ async def sendPackets():
 
 @sio.event
 async def connect(sid, environ):
+  print("socket-all-right")
   print("socket-all-right")
   await getDevices(1)
   await sendPackets()
@@ -128,6 +148,7 @@ async def getDevices(eh):
 
 @sio.event
 async def toggleCapturer(s, msg):
+
   global globall
 
   await sio.emit('toggleCapturer', True)
@@ -175,7 +196,8 @@ async def send_packet(pkt):
 
 @app.listener('after_server_start')
 async def notify_server_started(app, loop):
-  print("timer iniciado.")
+  print("rCap iniciado.. abriendo navegador.")
+  webbrowser.open('http://localhost:8000', new=2)
   await Timer()
 
 async def Timer():
@@ -184,11 +206,10 @@ async def Timer():
   global oldLen
 
   while True:
-    await asyncio.sleep(0.333)
+    await asyncio.sleep(0.22)
     if oldLen != len(filtered):
       oldLen = len(filtered)
       await sendPackets()
 
 if __name__ == '__main__':
-    asyncio.run
     app.run()

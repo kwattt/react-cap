@@ -11,7 +11,6 @@ const ToggleStatus = ({socket}) => {
 
   const setStatus = (bool) => {
     setLoad(true)
-    console.log(bool)
     socket.emit("toggleCapturer", {status: bool, current: data.selected})
     setData({...data, status: bool})
     } 

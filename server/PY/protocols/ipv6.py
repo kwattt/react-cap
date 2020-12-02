@@ -39,6 +39,10 @@ def ipv6(pkt):
     lr = udp(pkt[40::])
   elif pvalue == "TCP":
     lr = tcp(pkt[40::])
+  elif pvalue == "ICMPv4":
+    lr = icmpv4(pkt[40::])
+  elif pvalue == "ICMPv6":
+    lr = icmpv6(pkt[40::])
   if lr:
     res.extend(lr[0])
   else:

@@ -26,7 +26,7 @@ def getIpv4(entry):
 
 
 PROTOCOL = {
-  1: "ICMP",
+  1: "ICMPv4",
   2: "IGMP",
   6: "TCP",
   17: "UDP",
@@ -90,4 +90,35 @@ PORT = {
   993: "IMAP SSL",
   995: "POP SSL",
   1900: "UPnP"
+}
+CODE = {
+  0: "Net Unreachable",
+  1: "Host Unreachable",
+  2: "Protocol Unreachable",
+  3: "Port Unreachable",
+  4: "Fragmentation Needed and don't fragment was set",
+  5: "Source Route Failed",
+  6: "Destination Network Unknown",
+  7: "Destination Host Unknown",
+  8: "Source Host Isolated",
+  9: "Communication with destination is prohibited",
+  10: "Comunication with host is prohibited",
+  11: "Destination Network Unreachable for this service",
+  12: "Destination Host Unreachable for this service"
+}
+
+TYPE = {
+  0: "Echo Reply",
+  3: "Destination Unreacheable",
+  4: "Source Quench",
+  5: "Redirect",
+  8: "Echo",
+  11: "Time Exceeded",
+  12: "Parameter Problem",
+  13: "Timestamp",
+  14: "Timestamp Reply",
+  15: "Information Request",
+  16: "Information Reply",
+  17: "Addressmask",
+  18: "Addressmask Reply"
 }

@@ -1,6 +1,43 @@
 from protocols.common import *
 from protocols.applayer import *
 
+def icmpv4(pkt):
+  res = [["Internet Control Message Protocol IPv4", " "]]
+
+  typ = hex_to_dec(pkt[0]) 
+  if typ in TYPE:
+    typ = TYPE[typ]
+  res.append(["Type", typ])
+
+  code = hex_to_dec(pkt[1]) 
+  if code in CODE:
+    code = CODE[code]
+  res.append(["Code", code])
+  
+  res.append(["Checksum", "".join(pkt[2:4])])
+
+  return [res, "-", "-"] 
+
+def icmpv6(pkt):
+  res = [["Internet Control Message Protocol IPv6", " "]]
+
+  typ = hex_to_dec(pkt[0]) 
+  
+  if typ in TYPE:
+    typ = TYPE[typ]
+
+  res.append(["Type", typ])
+
+  code = hex_to_dec(pkt[1]) 
+
+  if code in CODE:
+    code = CODE[code]
+  res.append(["Code", code])
+  
+  res.append(["Checksum", "".join(pkt[2:4])])
+
+  return [res, "-", "-"] 
+
 def udp(pkt):
   res = [["User Datagram Protocol", " "]]
 

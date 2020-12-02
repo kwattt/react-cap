@@ -13,8 +13,6 @@ const Selected = ({selectedData}) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
-
   const haveID = (a1, a2) => {
     if(a1[0] === a2[0] && a1[1] === a2[1])
       return true
@@ -26,14 +24,10 @@ const Selected = ({selectedData}) => {
     if(element.some(current => haveID(current, [item, lid])))
     {
       setElement(element.filter(current => !haveID(current, [item, lid])))
-      console.log("remove", [item,lid])
     }
     else {
       setElement([...element, [item,lid]])
-      console.log("add", [item,lid])
     }
-    
-    console.log(element)
   }
 
   const canShow = (item, lid) => {
